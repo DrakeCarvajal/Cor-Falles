@@ -4,12 +4,16 @@ class InputField extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final bool obscure;
+  final TextInputType? keyboardType;
+  final Widget? suffixIcon;
 
   const InputField({
     super.key,
     required this.hint,
     required this.controller,
     this.obscure = false,
+    this.keyboardType,
+    this.suffixIcon,
   });
 
   @override
@@ -17,11 +21,15 @@ class InputField extends StatelessWidget {
     return TextField(
       controller: controller,
       obscureText: obscure,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
         fillColor: Colors.white.withOpacity(0.95),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        suffixIcon: suffixIcon,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     );
   }

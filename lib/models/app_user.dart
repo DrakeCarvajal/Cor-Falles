@@ -3,7 +3,7 @@ class AppUser {
   final String username;
   final String location;
 
-  // SOLO demo: nunca guardes passwords en texto plano en un proyecto real.
+  // SOLO demo: nunca se deben guardar passwords en texto plano en una aplicación real.
   final String password;
   final String role;
 
@@ -14,4 +14,24 @@ class AppUser {
     required this.password,
     required this.role,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'username': username,
+      'location': location,
+      'password': password,
+      'role': role,
+    };
+  }
+
+  factory AppUser.fromJson(Map<String, dynamic> json) {
+    return AppUser(
+      email: (json['email'] ?? '').toString(),
+      username: (json['username'] ?? '').toString(),
+      location: (json['location'] ?? '').toString(),
+      password: (json['password'] ?? '').toString(),
+      role: (json['role'] ?? 'usuario').toString(),
+    );
+  }
 }

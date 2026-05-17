@@ -1,46 +1,235 @@
+import 'dart:convert';
+
 class DemoEvent {
+  final String id;
   final String title;
   final String subtitle;
   final String dateInfo;
   final String imageUrl;
+  final String description;
+  final String category;
+  final DateTime? startDateTime;
+  final DateTime? endDateTime;
+  final double? latitude;
+  final double? longitude;
+
+  /// publicado | borrador | eliminado
+  final String status;
+  final DateTime? createdAt;
 
   const DemoEvent(
     this.title,
     this.subtitle,
     this.dateInfo, {
     required this.imageUrl,
+    required this.id,
+    this.description = '',
+    this.category = 'Otro',
+    this.startDateTime,
+    this.endDateTime,
+    this.latitude,
+    this.longitude,
+    this.status = 'publicado',
+    this.createdAt,
   });
+
+  DemoEvent copyWith({
+    String? id,
+    String? title,
+    String? subtitle,
+    String? dateInfo,
+    String? imageUrl,
+    String? description,
+    String? category,
+    DateTime? startDateTime,
+    DateTime? endDateTime,
+    double? latitude,
+    double? longitude,
+    String? status,
+    DateTime? createdAt,
+  }) {
+    return DemoEvent(
+      title ?? this.title,
+      subtitle ?? this.subtitle,
+      dateInfo ?? this.dateInfo,
+      imageUrl: imageUrl ?? this.imageUrl,
+      id: id ?? this.id,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      startDateTime: startDateTime ?? this.startDateTime,
+      endDateTime: endDateTime ?? this.endDateTime,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'subtitle': subtitle,
+      'dateInfo': dateInfo,
+      'imageUrl': imageUrl,
+      'description': description,
+      'category': category,
+      'startDateTime': startDateTime?.toIso8601String(),
+      'endDateTime': endDateTime?.toIso8601String(),
+      'latitude': latitude,
+      'longitude': longitude,
+      'status': status,
+      'createdAt': createdAt?.toIso8601String(),
+    };
+  }
+
+  factory DemoEvent.fromJson(Map<String, dynamic> json) {
+    return DemoEvent(
+      json['title'] ?? '',
+      json['subtitle'] ?? '',
+      json['dateInfo'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
+      id: json['id'] ?? '',
+      description: json['description'] ?? '',
+      category: json['category'] ?? 'Otro',
+      startDateTime: json['startDateTime'] != null
+          ? DateTime.tryParse(json['startDateTime'])
+          : null,
+      endDateTime: json['endDateTime'] != null
+          ? DateTime.tryParse(json['endDateTime'])
+          : null,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      status: json['status'] ?? 'publicado',
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+    );
+  }
+
+  static List<DemoEvent> listFromJsonString(String source) {
+    final decoded = jsonDecode(source) as List<dynamic>;
+    return decoded
+        .map((item) => DemoEvent.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  static String listToJsonString(List<DemoEvent> events) {
+    return jsonEncode(events.map((e) => e.toJson()).toList());
+  }
 }
 
-const demoEvents = <DemoEvent>[
-  DemoEvent('Mascletà', 'Plaza del Ayuntamiento', 'Hoy 14:00',
-      imageUrl:
-          'https://images.unsplash.com/photo-1519750783826-e2420f4d687f?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Discomóvil', 'Calle Jerusalén', 'Mañana 23:30',
-      imageUrl:
-          'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Ninots', 'Exposición', 'Fin de semana',
-      imageUrl:
-          'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Vendimia', 'Evento cultural', 'Próximamente',
-      imageUrl:
-          'https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Pasacalle', 'Centro histórico', 'Sábado 18:00',
-      imageUrl:
-          'https://images.unsplash.com/photo-1504805572947-34fad45aed93?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Castillo', 'Jardín del Turia', 'Domingo 00:00',
-      imageUrl:
-          'https://images.unsplash.com/photo-1520975958225-3f61d2f24006?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Ofrenda', 'Plaza de la Virgen', 'Lunes 17:00',
-      imageUrl:
-          'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Concierto', 'Ciudad de las Artes', 'Viernes 21:00',
-      imageUrl:
-          'https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Mercado', 'Ruzafa', 'Todo el día',
-      imageUrl:
-          'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80'),
-  DemoEvent('Taller', 'Casal fallero', 'Miércoles 19:00',
-      imageUrl:
-          'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1400&q=80'),
+final seedDemoEvents = <DemoEvent>[
+  DemoEvent(
+    'Mascletà',
+    'Plaza del Ayuntamiento',
+    '26/05/2026 14:00 - 14:30',
+    id: 'event_1',
+    imageUrl: 'assets/events_images/mascleta.jpg',
+    description: 'Mascletà principal en la Plaza del Ayuntamiento.',
+    category: 'Mascletà',
+    startDateTime: DateTime(2026, 5, 26, 14, 0),
+    endDateTime: DateTime(2026, 5, 26, 14, 30),
+    latitude: 39.4699,
+    longitude: -0.3763,
+    status: 'publicado',
+  ),
+  DemoEvent(
+    'Discomóvil',
+    'Calle Convento de Jerusalén',
+    '26/05/2026 23:30 - 02:00',
+    id: 'event_2',
+    imageUrl: 'assets/events_images/discomovil.jpg',
+    description: 'Sesión nocturna con música y ambiente festivo.',
+    category: 'Discomóvil',
+    startDateTime: DateTime(2026, 5, 26, 23, 30),
+    endDateTime: DateTime(2026, 5, 27, 2, 0),
+    latitude: 39.465509,
+    longitude: -0.379917,
+    status: 'publicado',
+  ),
+  DemoEvent(
+    'Exposición del Ninot',
+    'Museo de las Ciencias',
+    '30/05/2026 10:00 - 20:00',
+    id: 'event_3',
+    imageUrl: 'assets/events_images/exposicion.jpg',
+    description: 'Exposición de ninots seleccionados.',
+    category: 'Exposición',
+    startDateTime: DateTime(2026, 5, 30, 10, 0),
+    endDateTime: DateTime(2026, 5, 30, 20, 0),
+    latitude: 39.4549,
+    longitude: -0.3539,
+    status: 'publicado',
+  ),
+  DemoEvent(
+    'Pasacalle',
+    'Centro histórico',
+    '31/05/2026 18:00 - 20:00',
+    id: 'event_5',
+    imageUrl: 'assets/events_images/pasacalles.jpg',
+    description: 'Pasacalle por el centro histórico.',
+    category: 'Pasacalle',
+    startDateTime: DateTime(2026, 5, 31, 18, 0),
+    endDateTime: DateTime(2026, 5, 31, 20, 0),
+    latitude: 39.4750,
+    longitude: -0.3768,
+    status: 'publicado',
+  ),
+  DemoEvent(
+    'Castillo',
+    'Jardín del Turia',
+    '01/06/2026 00:00 - 00:30',
+    id: 'event_6',
+    imageUrl: 'assets/events_images/castillo.jpg',
+    description: 'Espectáculo pirotécnico nocturno.',
+    category: 'Castillo',
+    startDateTime: DateTime(2026, 6, 1, 0, 0),
+    endDateTime: DateTime(2026, 6, 1, 0, 30),
+    latitude: 39.4705,
+    longitude: -0.3621,
+    status: 'publicado',
+  ),
+  DemoEvent(
+    'Ofrenda',
+    'Plaza de la Virgen',
+    '26/05/2026 17:00 - 20:00',
+    id: 'event_7',
+    imageUrl: 'assets/events_images/ofrenda.jpg',
+    description: 'Ofrenda floral tradicional en honor a la Virgen.',
+    category: 'Ofrenda',
+    startDateTime: DateTime(2026, 5, 26, 17, 0),
+    endDateTime: DateTime(2026, 5, 26, 20, 0),
+    latitude: 39.4766,
+    longitude: -0.3753,
+    status: 'publicado',
+  ),
+  DemoEvent(
+    'Verbena Fallera',
+    'Casal fallero de Ruzafa',
+    '28/05/2026 22:00 - 02:00',
+    id: 'event_8',
+    imageUrl: 'assets/events_images/verbena.jpg',
+    description: 'Verbena nocturna organizada por la comisión fallera.',
+    category: 'Verbena',
+    startDateTime: DateTime(2026, 5, 28, 22, 0),
+    endDateTime: DateTime(2026, 5, 29, 2, 0),
+    latitude: 39.4620,
+    longitude: -0.3704,
+    status: 'publicado',
+  ),
+  DemoEvent(
+    'Cabalgata del Ninot',
+    'Centro de Valencia',
+    '29/05/2026 17:30 - 19:30',
+    id: 'event_9',
+    imageUrl: 'assets/events_images/default_event.jpg',
+    description: 'Cabalgata festiva con comparsas y ambiente fallero.',
+    category: 'Otro',
+    startDateTime: DateTime(2026, 5, 29, 17, 30),
+    endDateTime: DateTime(2026, 5, 29, 19, 30),
+    latitude: 39.4740,
+    longitude: -0.3760,
+    status: 'publicado',
+  ),
 ];

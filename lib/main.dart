@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'provider/auth_provider.dart';
 import 'pages/app_entry.dart';
+import 'provider/auth_provider.dart';
+import 'provider/event_provider.dart';
 
 void main() {
   runApp(const CorFallesApp());
@@ -16,19 +17,34 @@ class CorFallesApp extends StatefulWidget {
 
 class _CorFallesAppState extends State<CorFallesApp> {
   late final AuthController auth = AuthController();
+  late final EventController events = EventController();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   Future.microtask(() async {
+  //     await events.resetToSeedEvents();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return AuthScope(
-      notifier: auth,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Cor Falles',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF8B0000)),
+    return EventScope(
+      notifier: events,
+      child: AuthScope(
+        notifier: auth,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Cor Falles',
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF8B0000),
+            ),
+          ),
+          home: const AppEntry(),
         ),
-        home: const AppEntry(),
       ),
     );
   }

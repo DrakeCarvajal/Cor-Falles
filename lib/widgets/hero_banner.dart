@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/event_image.dart';
 
 class HeroBanner extends StatelessWidget {
   final double height;
@@ -29,11 +30,10 @@ class HeroBanner extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.network(
-                  imageUrl,
+                EventImage(
+                  imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) =>
-                      Container(color: const Color(0xFF1E1E1E)),
+                  errorFallback: Container(color: const Color(0xFF1E1E1E)),
                 ),
                 Container(color: Colors.black.withOpacity(0.35)),
                 Center(

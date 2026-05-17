@@ -3,21 +3,46 @@ import '../models/demo_event.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/hero_banner.dart';
 import '../widgets/event_card.dart';
+import '../provider/event_provider.dart';
 import 'event_detail_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String _query = '';
+
+  List<DemoEvent> _applySearch(List<DemoEvent> events) {
+    final q = _query.trim().toLowerCase();
+    if (q.isEmpty) return events;
+
+    return events.where((e) {
+      return e.title.toLowerCase().contains(q) ||
+          e.subtitle.toLowerCase().contains(q) ||
+          e.category.toLowerCase().contains(q) ||
+          e.description.toLowerCase().contains(q);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     const yellow = Color(0xFFF7D96B);
+    final allEvents = EventScope.of(context).publishedEvents;
+    final events = _applySearch(allEvents);
 
     const heroEvent = DemoEvent(
       'Fallas 2026',
       'Eventos oficiales y destacados',
       'Próximamente',
-      imageUrl:
-          'https://images.unsplash.com/photo-1543799382-9d85b0b8d3a7?auto=format&fit=crop&w=1600&q=80',
+      id: 'hero_fallas_2026',
+      imageUrl: 'assets/events_images/fallas.jpg',
+      description: 'Evento destacado principal de Cor Falles.',
+      category: 'Otro',
+      status: 'publicado',
     );
 
     return Scaffold(
@@ -32,7 +57,11 @@ class HomePage extends StatelessWidget {
                   children: [
                     SearchBarField(
                       hint: 'Buscar eventos...',
-                      onChanged: (_) {},
+                      onChanged: (value) {
+                        setState(() {
+                          _query = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 14),
                     HeroBanner(
@@ -51,7 +80,7 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Cercanos a ti',
+                      'Próximos eventos',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
@@ -70,10 +99,29 @@ class HomePage extends StatelessWidget {
                   final w = constraints.crossAxisExtent;
                   final cols = w >= 900 ? 2 : 1;
 
+                  if (events.isEmpty) {
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 24),
+                        child: Center(
+                          child: Text(
+                            _query.trim().isEmpty
+                                ? 'No hay eventos publicados todavía.'
+                                : 'No hay resultados para la búsqueda.',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   return SliverGrid(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        final e = demoEvents[index];
+                        final e = events[index];
                         return EventCardMock(
                           title: e.title,
                           subtitle: e.subtitle,
@@ -88,7 +136,7 @@ class HomePage extends StatelessWidget {
                           },
                         );
                       },
-                      childCount: demoEvents.length,
+                      childCount: events.length,
                     ),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: cols,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/event_image.dart';
 
 class EventCardMock extends StatelessWidget {
   final String title;
@@ -27,10 +28,10 @@ class EventCardMock extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              imageUrl,
+            EventImage(
+              imageUrl: imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
+              errorFallback: Container(
                 color: Colors.black12,
                 child: const Center(child: Icon(Icons.image_not_supported)),
               ),
