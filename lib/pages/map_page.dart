@@ -87,7 +87,7 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     const yellow = Color(0xFFF7D96B);
-    final isMobile = MediaQuery.of(context).size.width < 900;
+    // final isMobile = MediaQuery.of(context).size.width < 900;
 
     final events = EventScope.of(context).mapEvents();
     final visibleEvents = _applyCategoryFilter(events);

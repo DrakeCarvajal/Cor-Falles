@@ -878,43 +878,4 @@ class _EventLocationMapPageState extends State<_EventLocationMapPage> {
       ),
     );
   }
-
-  Widget _buildMapPreviewImage(DemoEvent event) {
-    final image = event.imageUrl;
-
-    if (image == null || image.isEmpty) {
-      return Container(
-        color: const Color(0xFFE6DED7),
-        alignment: Alignment.center,
-        child: const Icon(
-          Icons.image_outlined,
-          size: 34,
-          color: Color(0xFF8B0000),
-        ),
-      );
-    }
-
-    if (image.startsWith('assets/')) {
-      return Image.asset(
-        image,
-        fit: BoxFit.cover,
-      );
-    }
-
-    return Image.network(
-      image,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) {
-        return Container(
-          color: const Color(0xFFE6DED7),
-          alignment: Alignment.center,
-          child: const Icon(
-            Icons.broken_image_outlined,
-            size: 34,
-            color: Color(0xFF8B0000),
-          ),
-        );
-      },
-    );
-  }
 }

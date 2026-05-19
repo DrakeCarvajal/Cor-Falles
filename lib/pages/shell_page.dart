@@ -53,30 +53,26 @@ class _ShellPageState extends State<ShellPage> {
         }
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF7D96B),
+          backgroundColor: _yellow,
           body: content,
           bottomNavigationBar: NavigationBarTheme(
             data: NavigationBarThemeData(
               height: 82,
-              backgroundColor: const Color(0xFFFFFBF5),
-              indicatorColor: const Color(0xFF0B4DB3).withOpacity(0.14),
+              backgroundColor: _softCard,
+              indicatorColor: _blue.withOpacity(0.14),
               labelTextStyle: WidgetStateProperty.resolveWith((states) {
                 final selected = states.contains(WidgetState.selected);
                 return TextStyle(
                   fontSize: 12.5,
                   fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                  color: selected
-                      ? const Color(0xFF0B4DB3)
-                      : const Color(0xFF8B0000).withOpacity(0.72),
+                  color: selected ? _blue : _red.withOpacity(0.72),
                 );
               }),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 final selected = states.contains(WidgetState.selected);
                 return IconThemeData(
                   size: 24,
-                  color: selected
-                      ? const Color(0xFF0B4DB3)
-                      : const Color(0xFF8B0000).withOpacity(0.72),
+                  color: selected ? _blue : _red.withOpacity(0.72),
                 );
               }),
             ),
@@ -107,60 +103,6 @@ class _ShellPageState extends State<ShellPage> {
           ),
         );
       },
-    );
-  }
-}
-
-class _MobileNavItem extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _MobileNavItem({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const red = Color(0xFF8B0000);
-    const blue = Color(0xFF0B4DB3);
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(18),
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-        decoration: BoxDecoration(
-          color: selected ? blue.withOpacity(0.14) : Colors.transparent,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 24,
-              color: selected ? blue : red.withOpacity(0.72),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                color: selected ? blue : red.withOpacity(0.72),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
